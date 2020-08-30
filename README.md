@@ -1,5 +1,7 @@
 # Ethernet Frame Data Parser (Synchronous)
 
+## Summary
+
 In this assignment, you'll create and export a function that parses
 an Ethernet frame, handling both the DIX Ethernet II and IEEE 802.3
 formats.
@@ -10,7 +12,9 @@ addressing, a hardware-based addressing scheme that assigns a unique
 identifier to each network interface controller (NIC), usually available
 burned into the NIC's firmware.
 
-## Ethernet Packets, Ethernet Frames and the Inter-packet Gap
+## Background
+
+### Ethernet Packets, Ethernet Frames and the Inter-packet Gap
 
 Ethernet lives on layer 2 (Data Link) of the layered network model,
 but is transmitted over layer 1 (Physical). On the Physical layer,
@@ -30,7 +34,7 @@ An Ethernet frame is the layer 2 routing portion of the packet, and begins
 immediately after the SFD. Ethernet routing on the Data Link layer relies
 on MAC addresses to identify devices.
 
-## MAC Addresses
+### MAC Addresses
 
 A MAC address is a 48-bit (6 byte) address assigned to a network
 interface controller. The first 24 bits (3 bytes) are assigned
@@ -52,18 +56,18 @@ each byte's hexadecimal representation by a colon character. This is to
 make the addresses easier to interpret by explicitly showing the byte
 boundaries.
 
-## Ethernet Frame Formats
+### Ethernet Frame Formats
 
 There are two commonly used Ethernet frame formats today, though these
 are not the only Ethernet formats that have been used. In this assignment,
 you will implement a parser for an Ethernet frame for each of these common
 formats.
 
-### DIX Ethernet II
+#### DIX Ethernet II
 
 A creation coming out of work from Digital Equipment Corporation,
 Intel and Xerox in the early 1980's DIX Ethernet, and its successor
-DIX Ethernet II, quickly because a proprietary standard. Although
+DIX Ethernet II, quickly became a proprietary standard. Although
 the hardware associated with it was outmoded by a newer, open standard
 soon after, the frame format used was very popular, as it could hold
 a few more bytes per frame than its competitor IEEE 802.3.
@@ -84,7 +88,7 @@ DIX Ethernet II Frame Structure
 ------------------------------------------. . .------------------------
 ```
 
-### IEEE 802.3
+#### IEEE 802.3
 
 IEEE's 802.3 CSMA/CD frame structure took the DIX Ethernet II
 structure and replaced the "Ethertype" 2-byte field with an explicit
