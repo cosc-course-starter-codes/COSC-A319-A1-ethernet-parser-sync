@@ -1,5 +1,6 @@
 require('jest');
 const ethernet = require('./index');
+const {EthernetProtocolVariant} = require('./lib/ethernetProtocolVariant');
 const framecheck = require('./lib/framecheck');
 
 describe('parse', () => {
@@ -18,8 +19,8 @@ describe('parse', () => {
   });
 
   test('it should not error on known protocols', () => {
-    expect(() => { ethernet.parse(e2data, 'Ethernet II') }).not.toThrow();
-    expect(() => { ethernet.parse(e2data, 'IEEE 802.3') }).not.toThrow();
+    expect(() => { ethernet.parse(e2data, EthernetProtocolVariant.ETHERNET_II) }).not.toThrow();
+    expect(() => { ethernet.parse(e2data, EthernetProtocolVariant.IEEE_802_3) }).not.toThrow();
   });
   test('it should error on unknown protocols', () => {
     expect(() => { ethernet.parse(e2data, 'Some Unknown Protocol') })
@@ -52,11 +53,11 @@ describe('parse', () => {
         frame_check: 2755183799
       };
 
-      result = ethernet.parse(e2data, 'Ethernet II');
+      result = ethernet.parse(e2data, EthernetProtocolVariant.ETHERNET_II);
     });
     test('it should include the protocol in the result', () => {
       expect(result).toHaveProperty('protocol');
-      expect(result.protocol).toEqual('Ethernet II');
+      expect(result.protocol).toEqual(EthernetProtocolVariant.ETHERNET_II);
     });
     test('it parses header data into a header segment', () => {
       expect(result).toHaveProperty('header');
@@ -111,7 +112,7 @@ describe('parse', () => {
         jest.mock('./lib/framecheck');
         const framecheckModule = require('./lib/framecheck');
         framecheckModule.framecheck.mockReturnValue(e2expected.frame_check)
-        result = ethernet.parse(e2data, 'Ethernet II');
+        result = ethernet.parse(e2data, EthernetProtocolVariant.ETHERNET_II);
       })
       test('it should provide a frame_check_valid status of true', () => {
         expect(result).toHaveProperty('frame_check_valid');
@@ -155,11 +156,11 @@ describe('parse', () => {
         frame_check: 1650699221
       };
 
-      result = ethernet.parse(e802data, 'IEEE 802.3');
+      result = ethernet.parse(e802data, EthernetProtocolVariant.IEEE_802_3);
     });
     test('it should include the protocol in the result', () => {
       expect(result).toHaveProperty('protocol');
-      expect(result.protocol).toEqual('IEEE 802.3');
+      expect(result.protocol).toEqual(EthernetProtocolVariant.IEEE_802_3);
     });
     test('it parses header data into a header segment', () => {
       expect(result).toHaveProperty('header');

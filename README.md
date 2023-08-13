@@ -189,6 +189,9 @@ that should be helpful:
 
 - `parsers` folder - this is where you should put the protocol-specific
   parser code you write
+- `ethernetProtocolVariant.js` and `ethernetProtocolVariant.test.js` - a
+  module exporting an object `EthernetProtocolVariant` that functions as
+  an enum type for use in selecting the variant expected when parsing
 - `framecheck.js` and `framecheck.test.js` - a module exporting a function
   `framecheck` that computes the frame check sequence as a 32-bit unsigned
   integer
