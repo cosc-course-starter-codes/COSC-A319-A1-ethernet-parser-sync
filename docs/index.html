@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Home</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    <link type="text/css" rel="stylesheet" href="styles/base.min.css">
+</head>
+
+<body class="body">
+
+    <div class="container">
+
+        <nav class="sidenav">
+            <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#EthernetProtocolVariants">EthernetProtocolVariants</a></li><li><a href="global.html#framecheck">framecheck</a></li><li><a href="global.html#parse">parse</a></li></ul>
+        </nav>
+
+        <main id="main" class="main">
+            <div id="content" class="content">
+                <h1 class="page-title">Home</h1>
+                
+
+
+
+    
+
+
+    <h3> </h3>
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+    <section class="readme">
+        <article><h1 id="ethernet-frame-data-parser-(synchronous)">Ethernet Frame Data Parser (Synchronous)</h1>
+<h2 id="summary">Summary</h2>
+<p>In this assignment, you'll create and export a function that parses
+an Ethernet frame, handling both the DIX Ethernet II and IEEE 802.3
+formats.</p>
+<p>Ethernet frame addressing, being a data link layer protocol, uses a
+point-to-point addressing scheme called the media access control (MAC)
+addressing, a hardware-based addressing scheme that assigns a unique
+identifier to each network interface controller (NIC), usually available
+burned into the NIC's firmware.</p>
+<h2 id="background">Background</h2>
+<h3 id="ethernet-packets%2C-ethernet-frames-and-the-inter-packet-gap">Ethernet Packets, Ethernet Frames and the Inter-packet Gap</h3>
+<p>Ethernet lives on layer 2 (Data Link) of the layered network model,
+but is transmitted over layer 1 (Physical). On the Physical layer,
+Ethernet packets are transmitted over transmission media separated
+by an inter-packet gap of 12 bytes (octets). When designed, this gap
+was intended to provide a delay between packets; now, however, a
+12 byte gap provides minimal time delay, and acts simply as a separation
+between packets. Because of this, in some cases, that gap is now reduced
+to 8 bytes.</p>
+<p>A new Ethernet packet is signified by a preamble of 7 bytes (octets) of
+alternating 1s and 0s, followed by a 1-byte <em>start frame delimiter (SFD)</em>
+<code>10101011</code>. In hexadecimal, this preamble and SFD sequence is
+<code>AA AA AA AA AA AA AA AB</code>.</p>
+<p>An Ethernet frame is the layer 2 routing portion of the packet, and begins
+immediately after the SFD. Ethernet routing on the Data Link layer relies
+on MAC addresses to identify devices.</p>
+<h3 id="mac-addresses">MAC Addresses</h3>
+<p>A MAC address is a 48-bit (6 byte) address assigned to a network
+interface controller. The first 24 bits (3 bytes) are assigned
+as an address block by the IEEE to manufacturers of NIC devices
+for a fee. This portion is called the &quot;Organizationally Unique
+Identifier&quot; (OUI). The last 24 bits (3 bytes) are the manufacturer's
+unique serial number for the NIC device. (Some frame and packet
+inspection programs will display the OUI portion as a company name
+instead of using the 3-byte hexadecimal representation.)</p>
+<p>An example MAC address might look like <code>00:0d:b7:1f:fe:e6</code>. In this
+address, the OUI would be <code>00:0d:b7</code>, and since the NIC is an Intel
+product, might be replaced with <code>Intel_</code> or similar by a frame
+inspection program. The NIC's serial number would be <code>1f:fe:e6</code>.</p>
+<p>Note that MAC addresses are just a sequence of 48 bits in the machine.
+However, when we write MAC addresses for human consumption, we separate
+each byte's hexadecimal representation by a colon character. This is to
+make the addresses easier to interpret by explicitly showing the byte
+boundaries.</p>
+<h3 id="ethernet-frame-formats">Ethernet Frame Formats</h3>
+<p>There are two commonly used Ethernet frame formats today, though these
+are not the only Ethernet formats that have been used. In this assignment,
+you will implement a parser for an Ethernet frame for each of these common
+formats.</p>
+<h4 id="dix-ethernet-ii">DIX Ethernet II</h4>
+<p>A creation coming out of work from Digital Equipment Corporation,
+Intel and Xerox in the early 1980's DIX Ethernet, and its successor
+DIX Ethernet II, quickly became a proprietary standard. Although
+the hardware associated with it was outmoded by a newer, open standard
+soon after, the frame format used was very popular, as it could hold
+a few more bytes per frame than its competitor IEEE 802.3.</p>
+<p>The frame structure of DIX Ethernet II involves a 14-byte frame header
+and a 4-byte frame check sequence (FCS) trailer surrounding the frame's data
+payload, which can be up to 1500 bytes. The FCS is computed over all
+previous fields of the frame, not including the packet preamble and SFD.</p>
+<pre class="prettyprint source lang-{text}"><code>DIX Ethernet II Frame Structure
+|----------header-----------|-----payload-. . .-------------|-trailer-|
+------------------------------------------. . .------------------------
+| ' ' ' ' ' | ' ' ' ' ' | ' | ' ' ' ' ' ' . . . ' ' ' ' ' ' | ' ' ' ' |
+|  6 bytes  |  6 bytes  | 2B|       46 - 1500 bytes         | 4 bytes |
+|  Dst MAC  |  Src MAC  |Type           Payload             |   FCS   |
+|           |           |   |                               |         |
+------------------------------------------. . .------------------------
+</code></pre>
+<h4 id="ieee-802.3">IEEE 802.3</h4>
+<p>IEEE's 802.3 CSMA/CD frame structure took the DIX Ethernet II
+structure and replaced the &quot;Ethertype&quot; 2-byte field with an explicit
+frame length value of 2 bytes. However, in order to include the frame
+type information, they also added an 8-byte extension to the header
+including the IEEE 802.2 &quot;Logical Link Control&quot; (LLC) header and the
+&quot;Subnetwork Access Protocol&quot; (SNAP) header extension. This 8 bytes had
+to be carved from the payload data space in order to maintain the
+1518 byte total capacity limit supported by most hardware at the time.</p>
+<p>The extension header consists of 5 subfields:</p>
+<ul>
+<li>LLC: Destination Service Access Point (DSAP) = <code>0xAA</code></li>
+<li>LLC: Source Service Access Point (SSAP) = <code>0xAA</code></li>
+<li>LLC: Control = <code>0x03</code></li>
+<li>SNAP: Organizationally Unique ID (from MAC, or unused = <code>0x000000</code>)</li>
+<li>SNAP: Type (protocol of the packet in the payload), for example:
+<ul>
+<li>IPv4 = <code>0x0800</code></li>
+<li>IPv6 = <code>0x08DD</code></li>
+<li>ARP = <code>0x0806</code></li>
+</ul>
+</li>
+</ul>
+<p>For IEEE 802.3, the 4-byte FCS is computed using all prior fields of the
+frame, not including the packet preamble and SFD.</p>
+<p>Although DIX Ethernet II frame structure is used for most IP packet traffic
+on the Internet today, most other Ethernet-based network traffic usually
+uses the IEEE 802.3 frame format.</p>
+<pre class="prettyprint source lang-{text}"><code>IEEE 802.3 CSMA/CD LAN Frame Structure
+|----------header---------------------------|-payload-. . .---------|-trailer-|
+------------------------------------------------------. . .--------------------
+| ' ' ' ' ' | ' ' ' ' ' | ' | ' ' ' ' ' ' ' | ' ' ' ' . . . ' ' ' ' | ' ' ' ' |
+|  6 bytes  |  6 bytes  | 2B|    8 bytes    |   48 - 1492 bytes     | 4 bytes |
+|  Dst MAC  |  Src MAC  |Len|    LLC/SNAP   |       Payload         |   FCS   |
+|           |           |   |               |                       |         |
+------------------------------------------------------. . .--------------------
+                         __/                 \_________________________________
+                        /                                                      \
+                        ---------------------------------------------------------
+                        |      |      |      |      '      '      |      '      |
+                        |  1B  |  1B  |  1B  |      3 bytes       |   2 bytes   |
+                        | DSAP | SSAP | Ctrl |        OUI         |    Type     |
+                        |      |      |      |                    |             |
+                        ---------------------------------------------------------
+                        |-----802.2 LLC------|--------------SNAP----------------|
+</code></pre>
+<h2 id="your-assignment">Your Assignment</h2>
+<p>To complete this assignment, you need to write the body of the <code>parse</code>
+function defined and exported from <code>index.js</code>. You do not need to worry
+about asynchronous operations yet -- just be able to parse the incoming
+byte <code>Buffer</code> using the appropriate protocol.</p>
+<h3 id="expected-output">Expected Output</h3>
+<p>Your function should return a JavaScript object with the fields and
+structure specified below. Expected data types and descriptions are
+included in parentheses.</p>
+<pre class="prettyprint source lang-{text}"><code>{
+  protocol: (either &quot;Ethernet II&quot; or &quot;IEEE 802.3&quot;),
+  header: {
+    destinationMAC: (MAC address binary value as length 6 Buffer),
+    destination: (MAC Address human-readable text string),
+    sourceMAC: (MAC address binary value as length 6 Buffer),
+    source: (MAC Address human-readable text string),
+    type: (16-bit Unsigned integer value),
+    length: (16-bit Unsigned integer value, number of payload bytes),
+    llc: { // only include if relevant to protocol
+      dsap: (Unsigned Integer),
+      ssap: (Unsigned Integer),
+      control: (Unsigned Integer)
+    },
+    snap_oui: (MAC OUI binary value as length 3 Buffer, if relevant to protocol)
+  },
+  payload: (payload data in binary format as an Buffer with appropriate length),
+  frame_check: (Integer CRC-32 frame check sequence value),
+  frame_check_valid: (Boolean, true if computed FCS matches)
+}
+</code></pre>
+<h3 id="program-structure">Program Structure</h3>
+<p>While you must make your implementation pass automated tests that
+will only use the exported <code>parse</code> function, you will likely want
+to create several additional functions to help with parsing the data.
+Each of these functions should be well-tested (repeatably via automation),
+so that you can be confident of the accuracy and error-free quality of
+your parsing code. Each of these functions should also include relevant
+documentation <a href="https://jsdoc.app/">in JSdoc format</a> about why they exist,
+including expected inputs and outputs with data types.</p>
+<p>In this repo, you will find a <code>lib</code> folder which contains several things
+that should be helpful:</p>
+<ul>
+<li><code>parsers</code> folder - this is where you should put the protocol-specific
+parser code you write</li>
+<li><code>ethernetProtocolVariant.js</code> and <code>ethernetProtocolVariant.test.js</code> - a
+module exporting an object <code>EthernetProtocolVariant</code> that functions as
+an enum type for use in selecting the variant expected when parsing</li>
+<li><code>framecheck.js</code> and <code>framecheck.test.js</code> - a module exporting a function
+<code>framecheck</code> that computes the frame check sequence as a 32-bit unsigned
+integer</li>
+<li><code>displayMAC.js</code> and <code>displayMAC.test.js</code> - a module exporting a function
+<code>displayMAC</code> that formats a byte buffer as a human-readable MAC address</li>
+</ul>
+<h4 id="a-note-on-working-with-binary-in-javascript">A note on working with binary in JavaScript</h4>
+<p>In this assignment (and in most of the rest of the course), you'll be
+working with binary data in JavaScript. The interface for this work
+will almost always be the <code>Buffer</code> class and its subclasses. Get to know
+the <code>Buffer</code> class as soon as possible.</p>
+<p>In particular, you'll need to be very familiar with the methods to read
+various length unsigned integers, including the little endian (LE) and
+big endian (BE) variants and how to choose which variant you need, and the
+<code>subarray</code> method, as well as the typed subclasses of <code>Buffer</code>.</p>
+<p>In some cases, you'll want to explicitly treat each byte separately, which
+you can do by creating a <code>Uint8Array</code> from the <code>Buffer</code> by doing something
+like:</p>
+<pre class="prettyprint source lang-{javascript}"><code>Uint8Array.prototype.slice.call(this.buffer, startIndex, endIndex)
+</code></pre>
+<h3 id="submission-and-feedback">Submission and Feedback</h3>
+<p>You must submit your changes as commits to a new branch on the repository
+in the form of a Pull Request on Github. I will provide feedback in the
+context of the Pull Request within a week of the due date of the assignment.
+If you push your code earlier than the due date, I will try to provide
+feedback as needed.</p>
+<p>I suggest that you start by creating the new branch first, before doing any
+work on the program, that you commit your changes to that branch, and that
+you push your commits as you are working on the program. On the first push
+to the new branch, please go ahead and create the Pull Request in Github.
+This way, if you have questions, I will be able to review your
+work-in-progress and give more relevant answers and feedback. I will do my
+best to respond to questions posed during the course of the assignment with
+in a day of the ask. <strong>If you want to ask a question or request early
+feedback, please tag me in a comment on the Pull Request: <code>@nihonjinrxs</code>.</strong></p>
+<p>Good luck, and I look forward to seeing what you create!</p></article>
+    </section>
+
+
+
+
+
+
+            </div>
+
+            <div class="toc">
+                <h2>Table of contents</h2>
+                <div class="toc-nav"></div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Sun Aug 13 2023 21:49:49 GMT-0500 (Central Daylight Time)
+        </footer>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+    <script >
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.querySelectorAll('.prettyprint.linenums code').forEach((el) => {
+                hljs.configure({
+                    languages: ['javascript'],
+                });
+                hljs.highlightElement(el);
+                hljs.lineNumbersBlock(el);
+            });
+            document.querySelectorAll('pre code').forEach((el) => {
+                hljs.configure({
+                    languages: ['javascript'],
+                });
+                hljs.highlightElement(el);
+            });
+        })
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.18.2/tocbot.min.js"></script>
+    <script>
+        tocbot.init({
+        // Where to render the table of contents.
+        tocSelector: '.toc-nav',
+        // Where to grab the headings to build the table of contents.
+        contentSelector: '.main article',
+        // Which headings to grab inside of the contentSelector element.
+        headingSelector: 'h1.name, h2.name, h3.name, h4.name',
+        headingLabelCallback: (string) => string
+    });
+    </script>
+</body>
+</html>
