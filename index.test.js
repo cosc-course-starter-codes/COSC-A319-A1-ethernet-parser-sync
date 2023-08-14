@@ -182,5 +182,41 @@ describe('parse', () => {
       expect(result.header).toHaveProperty('source');
       expect(result.header.source).toEqual(e802expected.header.source);
     });
+    test('it should parse the Ethertype', () => {
+      expect(result.header).toHaveProperty('type');
+      expect(result.header.type).toEqual(e802expected.header.type);
+    });
+    test('it should provide the payload length', () => {
+      expect(result.header).toHaveProperty('length');
+      expect(result.header.length).toEqual(e802expected.header.length);
+    });
+    test('it should parse the Ethertype', () => {
+      expect(result.header).toHaveProperty('type');
+      expect(result.header.type).toEqual(e802expected.header.type);
+    });
+    test('it should provide the payload length', () => {
+      expect(result.header).toHaveProperty('length');
+      expect(result.header.length).toEqual(e802expected.header.length);
+    });
+    test('it should provide the payload', () => {
+      expect(result).toHaveProperty('payload');
+      expect(result.payload).toEqual(e802expected.payload);
+    });
+    test('it should provide the frame check', () => {
+      expect(result).toHaveProperty('frame_check');
+      expect(result.frame_check).toEqual(e802expected.frame_check);
+    });
+    describe('when frame check sequence matches', () => {
+      beforeEach(() => {
+        jest.mock('./lib/framecheck');
+        const framecheckModule = require('./lib/framecheck');
+        framecheckModule.framecheck.mockReturnValue(e802expected.frame_check)
+        result = ethernet.parse(e2data, EthernetProtocolVariant.IEEE_802_3);
+      })
+      test('it should provide a frame_check_valid status of true', () => {
+        expect(result).toHaveProperty('frame_check_valid');
+        expect(result.frame_check_valid).toBe(true);
+      });
+    });
   });
 });
