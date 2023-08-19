@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: index.js</title>
+    <title>JSDoc: Module: Ethernet/EthernetCommon</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
 
     <link type="text/css" rel="stylesheet" href="styles/base.min.css">
@@ -18,75 +18,93 @@
 
         <main id="main" class="main">
             <div id="content" class="content">
-                <h1 class="page-title">Source: index.js</h1>
+                <h1 class="page-title">Module: Ethernet/EthernetCommon</h1>
                 
 
 
 
+
+<section>
+
+<header>
     
-    <section>
-        <article>
-            <pre class="prettyprint source linenums"><code>/* Import any parser modules you write here */
+</header>
 
-/**
- * @module Ethernet
- * @exports Ethernet
- */
-module.exports = {
-  /**
-   * A representation of an Ethernet frame's contents parsed into
-   * an object containing all of its fields
-   * @typedef {{
-   *   protocol: EthernetProtocolVariant,
-   *   header: {
-   *     destinationMAC: Buffer,
-   *     destination: string,
-   *     sourceMAC: Buffer,
-   *     source: string,
-   *     type: number,
-   *     length: number,
-   *     llc: undefined | {
-   *       dsap: number,
-   *       ssap: number,
-   *       control: number
-   *     },
-   *     snap_oui: undefined|Buffer
-   *   },
-   *   payload: Buffer,
-   *   frame_check: number,
-   *   frame_check_valid: boolean
-   *  }} ParsedEthernetFrame
-   * @prop {EthernetProtocolVariant} protocol - the Ethernet protocol used to encode this frame
-   * @prop {Object} header - the header information from the frame
-   * @prop {Buffer} header.destinationMAC - the binary MAC address of the frame destination
-   * @prop {string} header.destination - a human-readable string representation of the destination MAC address
-   * @prop {Buffer} header.sourceMAC - the binary MAC address of the frame source
-   * @prop {string} header.source - a human-readable string representation of the source MAC address
-   * @prop {number} header.type - the Ethertype value from the frame header
-   * @prop {number} header.length - the frame payload length without the header or frame check sequence field
-   * @prop {Object?} header.llc - (IEEE 802.3 frames only) the LLC field data from the header
-   * @prop {number} header.llc.dsap - the DSAP field value from the header
-   * @prop {number} header.llc.ssap - the SSAP field value from the header
-   * @prop {number} header.llc.control - the Control field value from the header
-   * @prop {Buffer?} header.snap_oui - (IEEE 802.3 frames only) the SNAP OUI field value
-   * @prop {Buffer} payload - the payload data of the frame
-   * @prop {number} frame_check - the frame check sequence value contained on the end of the frame
-   * @prop {boolean} frame_check_valid - a boolean indicating whether the frame check validation succeeded
-   */
+<article>
+    <div class="container-overview">
+    
+        
 
-  /**
-   * Parse an Ethernet packet
-   * @param data {ArrayBuffer} - the packet as binary data
-   * @param protocol_variant {EthernetProtocolVariant} - the variant of the Ethernet Protocol being parsed
-   * @returns {ParsedEthernetFrame} - parsed fields
-   */
-  parse: function (data, protocol_variant) {
-    /* Implement the parsing here */
-  }
-};
-</code></pre>
-        </article>
-    </section>
+        
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_ethernetCommon.js.html">lib/ethernetCommon.js</a>, <a href="lib_ethernetCommon.js.html#line1">line 1</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
 
 
 
