@@ -4,7 +4,8 @@
 
 In this assignment, you'll create and export a function that parses
 an Ethernet frame, handling both the DIX Ethernet II and IEEE 802.3
-formats.
+formats. This assignment is an introductory one to give you a feel for
+how Ethernet frames work and how JavaScript works.
 
 Ethernet frame addressing, being a data link layer protocol, uses a
 point-to-point addressing scheme called the media access control (MAC)
