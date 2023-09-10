@@ -52,7 +52,7 @@ module.exports = {
    * @param protocol_variant {EthernetProtocolVariant} - the variant of the Ethernet Protocol being parsed
    * @returns {ParsedEthernetFrame} - parsed fields
    */
-  parse: function (data, protocol_variant) {
+  parse (data, protocolVariant) {
     /* Implement the parsing here */
-  }
+  },
 };
