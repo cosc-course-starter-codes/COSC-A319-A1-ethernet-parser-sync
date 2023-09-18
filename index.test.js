@@ -184,6 +184,12 @@ describe('parse', () => {
             0x00, 0x05, 0x85, 0x88, 0xcc, 0xdb,
           ]),
           source: '00:05:85:88:cc:db',
+          llc: {
+            dsap: 0xAA,
+            ssap: 0xAA,
+            control: 0x03,
+          },
+          snap_oui: Buffer.from([0x00, 0x00, 0x00]),
           type: 0x0800,
           length: 25,
         },
@@ -231,6 +237,26 @@ describe('parse', () => {
       expect(result.header).toHaveProperty('length');
       expect(result.header.length).toEqual(e802expected.header.length);
     });
+    test('it should provide LLC fields', () => {
+      expect(result.header).toHaveProperty('llc');
+      expect(result.header.llc).toBeInstanceOf(Object);
+    });
+    test('it should parse the LLC DSAP field', () => {
+      expect(result.header.llc).toHaveProperty('dsap');
+      expect(result.header.type).toEqual(e802expected.header.llc.dsap);
+    });
+    test('it should parse the LLC SSAP field', () => {
+      expect(result.header.llc).toHaveProperty('ssap');
+      expect(result.header.type).toEqual(e802expected.header.llc.ssap);
+    });
+    test('it should parse the LLC Control field', () => {
+      expect(result.header.llc).toHaveProperty('control');
+      expect(result.header.type).toEqual(e802expected.header.llc.control);
+    });
+    test('it should parse the SNAP OUI field', () => {
+      expect(result.header).toHaveProperty('snap_oui');
+      expect(result.header.type).toEqual(e802expected.header.snap_oui);
+    });
     test('it should parse the Ethertype', () => {
       expect(result.header).toHaveProperty('type');
       expect(result.header.type).toEqual(e802expected.header.type);
@@ -277,6 +303,12 @@ describe('parse', () => {
               0x00, 0x05, 0x85, 0x88, 0xcc, 0xdb,
             ]),
             source: '00:05:85:88:cc:db',
+            llc: {
+              dsap: 0xAA,
+              ssap: 0xAA,
+              control: 0x03,
+            },
+            snap_oui: Buffer.from([0x00, 0x00, 0x00]),
             type: 0x0800,
             length: 25,
           },
