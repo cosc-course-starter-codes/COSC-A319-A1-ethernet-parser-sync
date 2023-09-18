@@ -227,19 +227,19 @@ describe('parse', () => {
     });
     test('it should parse the LLC DSAP field', () => {
       expect(result.header.llc).toHaveProperty('dsap');
-      expect(result.header.type).toEqual(e802expected.header.llc.dsap);
+      expect(result.header.llc.dsap).toEqual(e802expected.header.llc.dsap);
     });
     test('it should parse the LLC SSAP field', () => {
       expect(result.header.llc).toHaveProperty('ssap');
-      expect(result.header.type).toEqual(e802expected.header.llc.ssap);
+      expect(result.header.llc.ssap).toEqual(e802expected.header.llc.ssap);
     });
     test('it should parse the LLC Control field', () => {
       expect(result.header.llc).toHaveProperty('control');
-      expect(result.header.type).toEqual(e802expected.header.llc.control);
+      expect(result.header.llc.control).toEqual(e802expected.header.llc.control);
     });
     test('it should parse the SNAP OUI field', () => {
       expect(result.header).toHaveProperty('snap_oui');
-      expect(result.header.type).toEqual(e802expected.header.snap_oui);
+      expect(result.header.snap_oui).toEqual(e802expected.header.snap_oui);
     });
     test('it should parse the Ethertype', () => {
       expect(result.header).toHaveProperty('type');
