@@ -102,14 +102,6 @@ describe('parse', () => {
       expect(result.header).toHaveProperty('length');
       expect(result.header.length).toEqual(e2expected.header.length);
     });
-    test('it should parse the Ethertype', () => {
-      expect(result.header).toHaveProperty('type');
-      expect(result.header.type).toEqual(e2expected.header.type);
-    });
-    test('it should provide the payload length', () => {
-      expect(result.header).toHaveProperty('length');
-      expect(result.header.length).toEqual(e2expected.header.length);
-    });
     test('it should provide the payload', () => {
       expect(result).toHaveProperty('payload');
       expect(result.payload).toEqual(e2expected.payload);
@@ -228,14 +220,6 @@ describe('parse', () => {
     test('it should include the source MAC address in human-readable form', () => {
       expect(result.header).toHaveProperty('source');
       expect(result.header.source).toEqual(e802expected.header.source);
-    });
-    test('it should parse the Ethertype', () => {
-      expect(result.header).toHaveProperty('type');
-      expect(result.header.type).toEqual(e802expected.header.type);
-    });
-    test('it should provide the payload length', () => {
-      expect(result.header).toHaveProperty('length');
-      expect(result.header.length).toEqual(e802expected.header.length);
     });
     test('it should provide LLC fields', () => {
       expect(result.header).toHaveProperty('llc');
